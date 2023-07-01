@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { In, Repository } from 'typeorm';
-import { UserDto, UserLoginDto } from './Dto/User.dto';
+import { UserDto, UserLoginDto, UserUpdDto } from './Dto/User.dto';
 import { Profile } from 'src/entities/user_profile.entity';
 // import { ProfileDto } from './Dto/Profile.dto';
 import { Post } from 'src/entities/post.entity';
@@ -45,11 +45,12 @@ export class UserServices {
       console.log(token)
       return { message: "Login Successfull !!!" ,token:token}
     } else {
-      throw new HttpException('Password is Incorrect !!!', HttpStatus.NOT_FOUND);
+      throw new HttpException('Invalid Credential !!!', HttpStatus.FORBIDDEN);
     }
 
   }
   async addNew(dto: UserDto) {
+  
     const check = await this.userRepo.find({ where: { email: dto.email } });
     console.log();
     if (check.length == 0) {
@@ -64,22 +65,24 @@ export class UserServices {
     }
   }
 
-  async updUser(id, dto: UserDto) {
+  async updUser(emailid, dto: UserUpdDto) {
     const match = await this.userRepo.find();
 
     if (match) {
-      const up = await this.userRepo.update({ id }, { ...dto });
+      const up = await this.userRepo.update({
+        email: emailid,
+      }, { ...dto });
       if (up) {
-        return { message: `User Detail updated for Id ${id}` };
+        return { message: `User Detail updated for Id ${emailid}` };
       }
     }
   }
 
-  async delUser(id) {
-    const del = await this.userRepo.delete({ id });
+  async delUser(emailid) {
+    const del = await this.userRepo.delete({ email: emailid });
 
     if (del) {
-      return { message: 'User Delelted Successful !!!' };
+      return { message: 'User Deleted Successful !!!' };
     }
   }
 
@@ -159,4 +162,5 @@ export class UserServices {
   //     return { message: 'User Delelted Successful !!!' };
   //   }
   // }
+
 }

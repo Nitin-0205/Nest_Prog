@@ -1,11 +1,10 @@
-import { IsString,IsNumber, IsNotEmpty } from "class-validator";
+import { IsString,IsNumber, IsNotEmpty, MaxLength, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
 export class UserDto{
     @IsString()
     @IsNotEmpty() 
     @ApiProperty()
-    
     userName :string;
 
     @IsNumber()
@@ -29,6 +28,24 @@ export class UserLoginDto{
     @IsNotEmpty() 
     @ApiProperty()
     email:string;
+
+    @IsString()
+    @IsNotEmpty() 
+    @ApiProperty()
+    password:string;
+
+}
+
+export class UserUpdDto{
+    @IsString()
+    @IsNotEmpty() 
+    @ApiProperty()
+    userName :string;
+
+    @IsNumber()
+    @IsNotEmpty() 
+    @ApiProperty()
+    contact:number;
 
     @IsString()
     @IsNotEmpty() 

@@ -13,19 +13,38 @@ export class ProfileService {
     @InjectRepository(User) private userRepo: Repository<User>,
   ){}
 
-  getProfile() {
-    const data = this.profileRepo.find();
-    return data;
-
-    if (data) {
+  async getProfile() {
+    const data = await this.profileRepo.find();
+    console.log(data);
+    if (!data) {
       throw new HttpException('No Profile Yet', HttpStatus.NO_CONTENT);
     }
+    return data;
+
+    
+  }
+  
+  async getUserProfile(emailid) {
+  
+    const data = await this.profileRepo.findOneBy({email: emailid});
+    console.log(data);
+
+    if (data === null) {
+      throw new HttpException('No User Profile Yet', HttpStatus.NOT_FOUND);
+    }
+    return data;
+
+    
   }
 
-  async addProfile(id, dto: ProfileDto) {
-    const user = await this.userRepo.findOneBy({ id, email: dto.email });
+  async addProfile(dto: ProfileDto) {
+    const user = await this.userRepo.findOneBy({ email: dto.email });
     if (!user) {
       throw new HttpException('User Not Exist !!!', HttpStatus.NOT_FOUND);
+    }
+    const userprof = await this.profileRepo.findOneBy({ email: dto.email });
+    if (userprof) {
+      throw new HttpException('User Profile Already Exist !!!', HttpStatus.NOT_FOUND);
     }
     const add = await this.profileRepo.save(dto);
     user.profile = add;
@@ -37,18 +56,27 @@ export class ProfileService {
     }
   }
 
-  async updProfile(id, dto: ProfileDto) {
-    const up = await this.profileRepo.update({ id }, { ...dto });
+  async updProfile(dto: ProfileDto) {
+    const up = await this.profileRepo.update({ email:dto.email}, { ...dto });
     if (up) {
-      return { message: `User Detail updated for Id ${id}` };
+      return { message: `User Detail updated for Id ${dto.email}` };
     }
   }
 
-  async delProfile(id) {
-    const del = await this.profileRepo.delete({ id });
+  async delProfile(emailid) {
+    const user = await this.userRepo.findOneBy({ email: emailid });
+    if (!user) {
+      throw new HttpException('User Not Exist !!!', HttpStatus.NOT_FOUND);
+    }
+    const userprof = await this.profileRepo.findOneBy({ email: emailid });
+    if (!userprof) {
+      throw new HttpException('User Profile Not Exist !!!', HttpStatus.NOT_FOUND);
+    }
+
+    const del = await this.profileRepo.delete({ email: emailid });
 
     if (del) {
-      return { message: 'User Delelted Successful !!!' };
+      return { message: 'User Deleted Successful !!!' };
     }
   }
 }

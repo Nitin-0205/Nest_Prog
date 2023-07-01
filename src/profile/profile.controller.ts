@@ -16,17 +16,21 @@ export class ProfileController {
   getProfile(){
       return this.profileService.getProfile()
   }
+  @Get("userProfile/:emailid")
+  getUserProfile(@Param("emailid")emailid:string){
+      return this.profileService.getUserProfile(emailid)
+  }
 
-  @Post("new/:id")
-  addProfile(@Param("id",ParseIntPipe)id:number,@Body() dto : ProfileDto){
-      return this.profileService.addProfile(id ,dto)
+  @Post("new")
+  addProfile(@Body() dto : ProfileDto){
+      return this.profileService.addProfile(dto)
   }
-  @Patch("upd/:id")
-  updateProfile(@Param("id",ParseIntPipe)id:number,@Body() dto: ProfileDto){
-      return  this.profileService.updProfile(id ,dto)
+  @Patch("upd")
+  updateProfile(@Body() dto: ProfileDto){
+      return  this.profileService.updProfile(dto)
   }
-  @Delete("del/:id")
-  deleteProfile(@Param("id")id:number){
-      return this.profileService.delProfile(id)
+  @Delete("del/:emailid")
+  deleteProfile(@Param("emailid")emailid:string){
+      return this.profileService.delProfile(emailid)
   }
 }

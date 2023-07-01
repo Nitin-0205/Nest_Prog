@@ -16,8 +16,12 @@ export class Post{
     @Column()
     email :string;
 
+    @Column()
+    image: string;
+    
     @ManyToOne(()=>User,user=>user.post)    
     user:User;
 
+    
 
 }

@@ -7,6 +7,4 @@ export class UserExceptionMiddleware implements  NestMiddleware {
         next();
 
     }
-
-    
 }

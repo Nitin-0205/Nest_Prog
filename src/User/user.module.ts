@@ -24,7 +24,7 @@ export const Jwtkey = 'Sigma_secret007'
     JwtModule.register({
       secret: Jwtkey,
       signOptions: {
-        expiresIn: "45m"
+        expiresIn: "45d"
       }
     }),
     TypeOrmModule.forFeature([User, Profile, Post])],

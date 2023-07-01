@@ -9,23 +9,17 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { PostModule } from './post/post.module';
 import { ProfileModule } from './profile/profile.module';
 import { JwtModule } from '@nestjs/jwt';
+import { typeOrmDataSrc } from './db/datasource';
+import { ItemsModule } from './items/items.module';
 
 
 @Module({
   imports: [UserModule,
     ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: "postgres",
-      host :"localhost",
-      port:5432,
-      username:"postgres",
-      password:"1234",
-      database:"sql_demo",
-      entities :[User,Profile,Post],
-      synchronize:true,
-    }),
+    TypeOrmModule.forRoot(typeOrmDataSrc),
     PostModule,
-    ProfileModule
+    ProfileModule,
+    ItemsModule
     ],
   controllers: [],
   providers: [],

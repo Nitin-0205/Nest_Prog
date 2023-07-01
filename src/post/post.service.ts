@@ -12,13 +12,30 @@ export class PostService {
   @InjectRepository(Post) private postRepo: Repository<Post>,){}
 
 
-  getPost() {
-    const data = this.postRepo.find({ relations: ['user'] });
+  async getPost() {
+    const data = await this.postRepo.find({ relations: ['user'] });
+    if(data.length == 0){
+      throw new HttpException('No Post Yet', HttpStatus.NOT_FOUND);
+    }
     return data;
   }
+  
+  async getUserPost(emailid){
+    // const dal = await this.userRepo.createQueryBuilder().select( ).where("email = :email", { email: emailid }).getOne();
+    // console.log(dal)
 
-  async addPost(id, dto: PostDto) {
-    const user = await this.userRepo.findOneBy({ id, email: dto.email });
+    const data = await this.postRepo.find({relations: ['user'], where: { email: emailid } });
+    console.log(data.length)
+
+    if(data.length === 0){
+      throw new HttpException('No Post Yet', HttpStatus.NOT_FOUND);
+    }
+    return data;
+
+  }
+
+  async addPost(dto: PostDto) {
+    const user = await this.userRepo.findOneBy({ email: dto.email });
     if (!user) {
       throw new HttpException('User Not Exist !!!', HttpStatus.NOT_FOUND);
     }
@@ -33,15 +50,15 @@ export class PostService {
     }
   }
 
-  async updPost(id, dto: PostDto) {
-    const up = await this.postRepo.update({ id }, { ...dto });
+  async updPost(dto: PostDto) {
+    const up = await this.postRepo.update({ email:dto.email }, { ...dto });
     if (up) {
-      return { message: `User Detail updated for Id ${id}` };
+      return { message: `User Detail updated for Id ${dto.email}` };
     }
   }
 
-  async delPost(id) {
-    const del = await this.postRepo.delete({ id });
+  async delPost(id,email) {
+    const del = await this.postRepo.delete({ id,email: email });
 
     if (del) {
       return { message: 'User Delelted Successful !!!' };

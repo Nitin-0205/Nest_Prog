@@ -15,6 +15,4 @@ export class JwtStategy extends PassportStrategy(Strategy,"jwt"){
     validate(){
         return true;
     }
-
-    
 }
