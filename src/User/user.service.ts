@@ -43,14 +43,14 @@ export class UserServices {
 
       const token = this.jwt.sign({ id: user[0].id, email: user[0].email });
       console.log(token)
-      return { message: "Login Successfull !!!" ,token:token}
+      return { message: "Login Successfull !!!", token: token }
     } else {
       throw new HttpException('Invalid Credential !!!', HttpStatus.FORBIDDEN);
     }
 
   }
   async addNew(dto: UserDto) {
-  
+
     const check = await this.userRepo.find({ where: { email: dto.email } });
     console.log();
     if (check.length == 0) {
@@ -79,6 +79,7 @@ export class UserServices {
   }
 
   async delUser(emailid) {
+    // this.userRepo.createQueryBuilder().delete().from(User).where("email = :email", { email: emailid })
     const del = await this.userRepo.delete({ email: emailid });
 
     if (del) {
@@ -125,7 +126,7 @@ export class UserServices {
   //     }
   //   }
 
-  //////////////////////////////////Post////////////////////////////////////////////
+  // ////////////////////////////////Post////////////////////////////////////////////
 
   // getPost() {
   //   const data = this.postRepo.find({ relations: ['user'] });
